@@ -832,7 +832,7 @@ sub start_qemu {
             sp('k', $vars->{VNCKB}) if $vars->{VNCKB};
         }
 
-        if ($vars->{VIRTIO_CONSOLE}) {
+        if (!$vars->{NO_VIRTIO_CONSOLE}) {
             my $id = 'virtio_console';
             sp('device', 'virtio-serial');
             sp('chardev', [qv "socket path=$id server nowait id=$id logfile=$id.log logappend=on"]);

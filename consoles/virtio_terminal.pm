@@ -132,14 +132,14 @@ sub open_socket {
 
 sub activate {
     my ($self) = @_;
-    if (get_var('VIRTIO_CONSOLE')) {
+    if (!get_var('NO_VIRTIO_CONSOLE')) {
         $self->{socket_fd}              = $self->open_socket unless $self->{socket_fd};
         $self->{screen}                 = consoles::virtio_screen::->new($self->{socket_fd});
         $self->{screen}->{carry_buffer} = $self->{preload_buffer};
         $self->{preload_buffer}         = '';
     }
     else {
-        croak 'VIRTIO_CONSOLE is not set, so no virtio-serial and virtconsole devices will be available to use with this console.';
+        croak 'NO_VIRTIO_CONSOLE is set, so no virtio-serial and virtconsole devices will be available to use with this console.';
     }
     return;
 }

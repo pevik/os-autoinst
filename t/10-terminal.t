@@ -251,11 +251,22 @@ sub is_matched {
     is_deeply($result, {matched => 1, string => $expected}, $name);
 }
 
+# FIXME: debug
+sub test_terminal_no_virtio_ {
+    my $tb = Test::More->builder;
+    $tb->reset;
+    testapi::set_var('NO_VIRTIO_CONSOLE', 1);
+    $term->reset;
+    done_testing;
+}
+sub test_terminal_no_virtio {
+    testapi::set_var('NO_VIRTIO_CONSOLE', 1);
+    test_terminal_directly;
+}
+
 sub test_terminal_directly {
     my $tb = Test::More->builder;
     $tb->reset;
-
-    testapi::set_var('VIRTIO_CONSOLE', 1);
 
     my $term = consoles::virtio_terminal->new('unit-test-console', []);
     $term->activate;
@@ -369,10 +380,17 @@ my $tpid = fork || do {
     exit 0;
 };
 
+my $tpid2 = fork || do {
+    test_terminal_no_virtio;
+    exit 0;
+};
+
 waitpid($fpid, 0);
 check_child('Fake terminal');
 waitpid($tpid, 0);
 check_child('Direct test');
+waitpid($tpid2, 0);
+check_child('No virtio test');
 
 done_testing;
 unlink $socket_path;
