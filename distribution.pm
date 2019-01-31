@@ -193,6 +193,7 @@ $serial_term_prompt.
 
 =cut
 sub script_output {
+    bmwqemu::fctwarn("pev: distributed.pm script_output START"); # FIXME: debug
     my ($self, $script, $wait, %args) = @_;
     my $marker = testapi::hashed_string("SO$script");
     # 80 is approximate quantity of chars typed during 'curl' approach
@@ -211,6 +212,7 @@ sub script_output {
     if (testapi::is_serial_terminal) {
         my $heretag = 'EOT_' . $marker;
         my $cat     = "cat > $script_path << '$heretag'; echo $marker-\$?-";
+        bmwqemu::fctwarn("pev: calling testapi::wait_serial '" . $self->{serial_term_prompt} . "'"); # FIXME: debug
         testapi::wait_serial($self->{serial_term_prompt}, undef, 0, no_regex => 1);
         testapi::type_string($cat . "\n");
         testapi::wait_serial("$cat", undef, 0, no_regex => 1);

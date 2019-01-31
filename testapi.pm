@@ -807,6 +807,7 @@ sub wait_serial {
     my $regexp           = shift;
     my $timeout          = shift || 90;    # seconds
     my $expect_not_found = shift || 0;     # expected can not found the term in serial output
+    bmwqemu::fctwarn("pev: wait_serial start (regexp: '$regexp', timeout: '$timeout', expect_not_found: '$expect_not_found')\n"); # FIXME: debug
 
     my %nargs = (@_, (regexp => $regexp, timeout => $timeout));
 
@@ -820,10 +821,13 @@ sub wait_serial {
         $matched = !$matched;
     }
     bmwqemu::wait_for_one_more_screenshot() unless is_serial_terminal;
+    bmwqemu::fctwarn("pev: " . (is_serial_terminal ? "is_serial_terminal" : "NO is_serial_terminal")); # FIXME: debug
 
     # to string, we need to feed string of result to
     # record_serialresult()
     $matched = $matched ? 'ok' : 'fail';
+    bmwqemu::fctwarn("pev: matched: '$matched'"); # FIXME: debug
+
     # convert dos2unix (poo#20542)
     $ret->{string} =~ s,\r\n,\n,g;
     $autotest::current_test->record_serialresult(bmwqemu::pp($regexp), $matched, $ret->{string});
@@ -1288,6 +1292,7 @@ Uses C<$testapi::password> if no string is given.
 sub type_password {
     my ($string, %args) = @_;
     $string //= $password;
+    bmwqemu::fctwarn("pev: typing password '$string'\n"); # FIXME: debug
     type_string $string, secret => 1, max_interval => ($args{max_interval} // 100);
 }
 

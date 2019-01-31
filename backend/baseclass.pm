@@ -811,9 +811,11 @@ sub wait_serial {
     my $timeout = $args->{timeout};
     my $matched = 0;
     my $str;
+    bmwqemu::fctwarn("pev: baseclass.pm wait_serial start (regexp: '$regexp', timeout: '$timeout')\n"); # FIXME: debug
 
     confess '\'current_console\' is not set' unless $self->{current_console};
     if ($self->{current_console}->is_serial_terminal) {
+        bmwqemu::fctwarn("pev: CALLING self->{current_screen}->read_until(...) !!!!"); # FIXME: debug
         return $self->{current_screen}->read_until($regexp, $timeout, %$args);
     }
 
