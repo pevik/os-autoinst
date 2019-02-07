@@ -22,6 +22,7 @@ use base 'consoles::console';
 
 use testapi 'get_var';
 use consoles::virtio_screen;
+use Data::Dumper;
 
 sub new {
     my ($class, $testapi_console, $args) = @_;
@@ -57,8 +58,13 @@ sub activate {
     my ($ssh, $chan) = $backend->open_serial_console_via_ssh($self->{libvirt_domain}, $self->{serial_port_no});
 
     $self->{ssh}    = $ssh;
+
+    bmwqemu::fctwarn("pev: dump \$ssh"); # FIXME: debug
+    print Dumper($ssh); # FIXME: debug
+    bmwqemu::fctwarn("pev: dump \$ssh->sock"); # FIXME: debug
+    print Dumper($ssh->sock); # FIXME: debug
+
     $self->{screen} = consoles::virtio_screen->new($chan, $ssh->sock);
-    return;
 }
 
 sub is_serial_terminal {

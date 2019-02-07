@@ -20,6 +20,7 @@ use warnings;
 use autodie;
 
 use base 'consoles::console';
+use Data::Dumper;
 
 use Socket qw(SOCK_NONBLOCK PF_UNIX SOCK_STREAM sockaddr_un);
 use Errno qw(EAGAIN EWOULDBLOCK);
@@ -140,6 +141,9 @@ sub activate {
         $self->{screen}                 = consoles::virtio_screen::->new($self->{socket_fd});
         $self->{screen}->{carry_buffer} = $self->{preload_buffer};
         $self->{preload_buffer}         = '';
+
+        bmwqemu::fctwarn("pev: dump \$self->{socket_fd}"); # FIXME: debug
+        print Dumper($self->{socket_fd}); # FIXME: debug
     }
     else {
         croak 'VIRTIO_CONSOLE is set 0, so no virtio-serial and virtconsole devices will be available to use with this console.';

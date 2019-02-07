@@ -1170,7 +1170,8 @@ sub new_ssh_connection {
     my ($self, %args) = @_;
     $args{username} ||= 'root';
 
-    my $ssh = Net::SSH2->new;
+    #my $ssh = Net::SSH2->new(debug => 1);
+    my $ssh = Net::SSH2->new();
 
     # Retry 5 times, in case of the guest is not running yet
     my $counter = 5;

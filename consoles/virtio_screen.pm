@@ -22,6 +22,7 @@ use integer;
 use English -no_match_vars;
 use Time::HiRes qw(clock_gettime CLOCK_MONOTONIC);
 use Carp 'croak';
+use Data::Dumper;
 
 our $VERSION;
 
@@ -195,6 +196,16 @@ sub read_until {
     my $loops = 0;
     my ($prematch, $match);
 
+    bmwqemu::fctwarn("pev: fd: '$fd'"); # FIXME: debug
+    print Dumper($fd); # FIXME: debug
+    bmwqemu::fctwarn("pev: sel_fd: '$sel_fd'"); # FIXME: debug
+    print Dumper($sel_fd); # FIXME: debug
+
+    bmwqemu::fctwarn("pev: fileno(fd) ($fd): "); # FIXME: debug
+    print Dumper(fileno($fd)); # FIXME: debug
+    bmwqemu::fctwarn("pev: fileno(sel_fd) ($sel_fd): "); # FIXME: debug
+    print Dumper(fileno($sel_fd)); # FIXME: debug
+
     my $re = normalise_pattern($pattern, $nargs{no_regex});
 
     $nargs{pattern} = $re;
@@ -204,8 +215,13 @@ sub read_until {
     my $rin = '';
     vec($rin, fileno($sel_fd), 1) = 1;
 
+    bmwqemu::fctwarn("pev: rin: '$rin'"); # FIXME: debug
+    print Dumper($rin); # FIXME: debug
+
   READ: while (1) {
         $loops++;
+        bmwqemu::fctwarn("pev: $loops: rbuf:"); # FIXME: debug
+        print Dumper($rbuf); # FIXME: debug
 
         # Search ring buffer for a match and exit if we find it
         if ($nargs{no_regex}) {
