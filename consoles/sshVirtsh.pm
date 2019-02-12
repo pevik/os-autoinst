@@ -156,6 +156,9 @@ sub _init_xml {
     $self->{devices_element} = $doc->createElement('devices');
     $root->appendChild($self->{devices_element});
 
+    #bmwqemu::fctwarn("pev: adding serial console"); # FIXME: debug
+    #$self->add_serial_console();
+
     return;
 }
 
