@@ -523,6 +523,7 @@ sub resume {
 }
 
 sub define_and_start {
+    bmwqemu::fctwarn("pev: define_and_start"); # FIXME: debug
     my ($self, $args) = @_;
 
     my $remote_vmm = "";
@@ -567,6 +568,7 @@ __END"
     $self->run_cmd("virsh $remote_vmm define $xmlfilename")  && die "virsh define failed";
     $self->run_cmd("virsh $remote_vmm start " . $self->name) && die "virsh start failed";
 
+    bmwqemu::fctwarn("pev: call \$self->backend->start_serial_grab($self->name)"); # FIXME: debug
     $self->backend->start_serial_grab($self->name);
 
     return;

@@ -223,6 +223,7 @@ sub read_credentials_from_virsh_variables {
 
 # opens another SSH connection to grab the serial console for the serial log
 sub start_serial_grab {
+    bmwqemu::fctwarn("pev: start_serial_grab"); # FIXME: debug
     my ($self, $name) = @_;
 
     # Connect to VM host, or, in case of Hyper-V, to intermediary from which we gather
@@ -237,7 +238,9 @@ sub start_serial_grab {
         $password = get_var('VIRSH_PASSWORD');
     }
     my $credentials = $self->read_credentials_from_virsh_variables;
+    bmwqemu::fctwarn("pev: credentials: '$credentials'"); # FIXME: debug
     my $chan        = $self->start_ssh_serial(%$credentials);
+    bmwqemu::fctwarn("pev: chan: '$chan'"); # FIXME: debug
     if (check_var('VIRSH_VMM_FAMILY', 'vmware')) {
         # libvirt esx driver does not support `virsh console', so
         # we have to connect to VM's serial port via TCP which is
@@ -251,12 +254,14 @@ sub start_serial_grab {
         $chan->exec('nc ' . get_var('HYPERV_SERVER') . ' ' . get_var('HYPERV_SERIAL_PORT'));
     }
     else {
-        $chan->exec('virsh console ' . $name);
+        bmwqemu::fctwarn("pev: WOULD RUN: virsh console $name'"); # FIXME: debug
+        #$chan->exec('virsh console ' . $name);
     }
 }
 
 # opens another SSH connection to grab the serial console with the specified port
 sub open_serial_console_via_ssh {
+    bmwqemu::fctwarn("pev: open_serial_console_via_ssh"); # FIXME: debug
     my ($self, $name, $port) = @_;
 
     bmwqemu::diag("Starting SSH connection to connect to libvirt domain $name via serial port $port");
@@ -278,6 +283,7 @@ sub open_serial_console_via_ssh {
         $chan->exec('nc ' . get_var('HYPERV_SERVER') . ' ' . $port);
     }
     else {
+        bmwqemu::fctwarn("pev: running: 'virsh console $name serial$port'"); # FIXME: debug
         $chan->exec("virsh console \"$name\" \"serial$port\"");
     }
 
