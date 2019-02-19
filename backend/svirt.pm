@@ -1,5 +1,5 @@
 # Copyright © 2009-2013 Bernhard M. Wiedemann
-# Copyright © 2012-2016 SUSE LLC
+# Copyright © 2012-2019 SUSE LLC
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -272,7 +272,7 @@ sub start_serial_grab {
 
 # opens another SSH connection to grab the serial console with the specified port
 sub open_serial_console_via_ssh {
-    my ($self, $name, $port) = @_;
+    my ($self, $name, $devname, $port) = @_;
 
     bmwqemu::diag("Starting SSH connection to connect to libvirt domain $name via serial port $port");
     my $credentials = $self->read_credentials_from_virsh_variables;
@@ -293,7 +293,7 @@ sub open_serial_console_via_ssh {
         $chan->exec('nc ' . get_var('HYPERV_SERVER') . ' ' . $port);
     }
     else {
-        $chan->exec("virsh console \"$name\" \"serial$port\"");
+        $chan->exec("virsh console \"$name\" \"$devname$port\"");
     }
 
     return ($ssh, $chan);

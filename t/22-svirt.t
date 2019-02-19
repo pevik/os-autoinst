@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# Copyright © 2018-2019 SUSE LLC
 
 use strict;
 use warnings;
@@ -59,7 +60,7 @@ subtest 'XML config for VNC and serial console' => sub {
     $svirt_console->_init_xml();
     $svirt_console->add_vnc({port => 5901});
     $svirt_console->add_pty({target_port => 0});
-    $svirt_console->add_serial_console();
+    $svirt_console->add_serial_console({pty_dev => 'console', target_port => 1});
 
     my $produced_xml = $svirt_console->{domainxml}->toString(2);
     my $expected_xml = '22-svirth-virsh-config.xml';
