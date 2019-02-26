@@ -279,11 +279,6 @@ sub open_serial_console_via_ssh {
     my $ssh         = $self->new_ssh_connection(%$credentials);
     my $chan        = $ssh->channel();
     die 'No channel found' unless $chan;
-    $chan->blocking(0);
-    $chan->pty('vt100', {echo => 1});
-    $chan->pty_size(1024, 24);
-    $chan->shell();
-    print($chan "PS1='# '\n");
 
     # note: see comments in start_serial_grab for the special handling of vmware/hyperv
     if (check_var('VIRSH_VMM_FAMILY', 'vmware')) {
