@@ -126,15 +126,9 @@ sub run_cmd {
 }
 
 sub run_ssh_cmd {
-    my ($self, $cmd, $hostname, $password) = @_;
-    $hostname ||= get_required_var('VIRSH_HOSTNAME');
-    $password ||= get_var('VIRSH_PASSWORD');
-
-    $self->{ssh} = $self->new_ssh_connection(
-        hostname => $hostname,
-        password => $password,
-        username => 'root'
-    );
+    my ($self, $cmd) = @_;
+    my $credentials = $self->read_credentials_from_virsh_variables;
+    my $self->{ssh} = $self->new_ssh_connection(%$credentials);
     return run_cmd($self->{ssh}, $cmd);
 }
 
@@ -193,16 +187,14 @@ sub load_snapshot {
     if (check_var('VIRSH_VMM_FAMILY', 'hyperv')) {
         my $ps = 'powershell -Command';
         $rsp = $self->run_ssh_cmd("$ps Restore-VMSnapshot -VMName $vmname -Name $snapname -Confirm:\$false");
-        $self->run_ssh_cmd("mv -v xfreerdp_${vmname}_stop xfreerdp_${vmname}_stop.bkp", get_required_var('VIRSH_GUEST'), get_var('VIRSH_GUEST_PASSWORD'));
+        $self->run_ssh_cmd("mv -v xfreerdp_${vmname}_stop xfreerdp_${vmname}_stop.bkp");
         for my $i (1 .. 5) {
             # Because of FreeRDP issue https://github.com/FreeRDP/FreeRDP/issues/3876,
             # we can't connect too "early". Let's have a nap for a while.
             sleep 10;
             last
               unless $self->run_ssh_cmd(
-                "pgrep --full --list-full xfreerdp.*\$(cat xfreerdp_${vmname}_stop.bkp)",
-                get_required_var('VIRSH_GUEST'),
-                get_var('VIRSH_GUEST_PASSWORD'));
+                "pgrep --full --list-full xfreerdp.*\$(cat xfreerdp_${vmname}_stop.bkp)");
             die "xfreerdp did not start" if ($i eq 5);
         }
     }
