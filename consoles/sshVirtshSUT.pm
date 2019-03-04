@@ -21,7 +21,7 @@ use warnings;
 use base 'consoles::console';
 
 use testapi 'get_var';
-use consoles::virtio_screen;
+use consoles::serial_screen;
 
 sub new {
     my ($class, $testapi_console, $args) = @_;
@@ -67,7 +67,7 @@ sub activate {
         devname => $self->{pty_dev}, port => $self->{serial_port_no}, is_terminal => 1);
 
     $self->{ssh}    = $ssh;
-    $self->{screen} = consoles::virtio_screen->new($chan, $ssh->sock);
+    $self->{screen} = consoles::serial_screen->new($chan, $ssh->sock);
     return;
 }
 
