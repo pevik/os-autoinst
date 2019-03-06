@@ -157,9 +157,35 @@ See parameters and examples at C<run_cmd>.
 =cut
 sub run_ssh_cmd {
     my ($self, $cmd) = @_;
+=cut
     my $credentials = $self->read_credentials_from_virsh_variables;
     my $self->{ssh} = $self->new_ssh_connection(%$credentials);
     return run_cmd($self->{ssh}, $cmd);
+=cut
+
+    my ($self, $cmd, %args) = @_;
+    bmwqemu::log_call(@_);
+    my $credentials = $self->read_credentials_from_virsh_variables;
+    bmwqemu::diag "args first:"; # FIXME: debug
+    bmwqemu::log_call(%args);
+
+    my $ssh = $self->new_ssh_connection(%$credentials);
+    if ($args{nonblock}) {
+        bmwqemu::diag("nonblock + wantarray => PUTTING self->{ssh}"); # FIXME: debug
+    } else {
+        bmwqemu::diag("ELSE nonblock + wantarray => PUTTING self->{ssh}"); # FIXME: debug
+        my $self->{ssh} = $ssh;
+        #bmwqemu::diag("NOT PUTTING self->{ssh} !!!"); # FIXME: debug
+    }
+    bmwqemu::diag "args second:"; # FIXME: debug
+    bmwqemu::log_call(%args);
+=cut
+    #if (!$args{new_connection}) { # FIXME: debug
+    if (!$args{nonblock}) {
+        my $self->{ssh} = $ssh;
+    }
+=cut
+    return run_cmd($ssh, $cmd, %args);
 }
 
 sub scp_get {
