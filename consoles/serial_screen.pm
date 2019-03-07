@@ -207,10 +207,16 @@ sub read_until {
   READ: while (1) {
         $loops++;
 
+        bmwqemu::fctwarn("===== start: $loops ====="); # FIXME: debug
+
         # Search ring buffer for a match and exit if we find it
         if ($nargs{no_regex}) {
+            bmwqemu::fctwarn("$loops: IF noregexp"); # FIXME: debug
+            my $ii = 0; # FIXME: debug
             for my $p (@$re) {
                 my $i = index($rbuf, $p);
+                $ii++; # FIXME: debug
+                bmwqemu::fctwarn("$loops/$ii i: '$i'"); # FIXME: debug
                 if ($i >= 0) {
                     $match    = substr $rbuf, $i, length($p);
                     $prematch = substr $rbuf, 0, $i;
@@ -228,6 +234,7 @@ sub read_until {
         }
 
         if (elapsed($sttime) >= $timeout) {
+            bmwqemu::fctwarn("elapsed($sttime) >= $timeout"); # FIXME: debug
             $self->{carry_buffer} = $rbuf;
             return {matched => 0, string => ($overflow || '') . $rbuf};
         }
@@ -238,7 +245,9 @@ sub read_until {
         }
 
         my $read = sysread($fd, $buf, $buflen / 2);
+        bmwqemu::fctwarn("read: '$read', buf: '$buf', \$buflen / 2: " . ($buflen / 2)); # FIXME: debug
         unless (defined $read) {
+            bmwqemu::fctwarn("ERRNO{EAGAIN}: '$ERRNO{EAGAIN}'"); # FIXME: debug
             if ($ERRNO{EAGAIN} || $ERRNO{EWOULDBLOCK}) {
                 next READ;
             }
@@ -250,13 +259,16 @@ sub read_until {
         # begining. If we are recording all output, add the removed bytes to
         # $overflow.
         if (length($rbuf) + $read > $buflen) {
+            bmwqemu::fctwarn("rbuf 1: length($rbuf) + $read > $buflen"); # FIXME: debug
             my $remove_len = $read - ($buflen - length($rbuf));
             if (defined $overflow) {
                 $overflow .= substr $rbuf, 0, $remove_len;
             }
             $rbuf = substr $rbuf, $remove_len;
+            bmwqemu::fctwarn("rbuf 2: '$rbuf'"); # FIXME: debug
         }
         $rbuf .= $buf;
+        bmwqemu::fctwarn("rbuf 3: '$rbuf', buf: '$buf'"); # FIXME: debug
     }
 
     my $elapsed = elapsed($sttime);
@@ -264,8 +276,10 @@ sub read_until {
 
     $overflow ||= '';
     if ($nargs{exclude_match}) {
+        bmwqemu::fctwarn("overflow: '$overflow'"); # FIXME: debug
         return $overflow . $prematch;
     }
+    bmwqemu::fctwarn("return string: '$overflow . $prematch . $match'"); # FIXME: debug
     return {matched => 1, string => $overflow . $prematch . $match};
 }
 
