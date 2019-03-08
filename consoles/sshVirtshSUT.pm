@@ -24,6 +24,7 @@ use testapi 'get_var';
 use consoles::virtio_screen;
 
 sub new {
+    bmwqemu::fctwarn("=== pev: sshVirtshSUT::new()"); # FIXME: debug
     my ($class, $testapi_console, $args) = @_;
 
     my $self = $class->SUPER::new($testapi_console, $args);
@@ -45,14 +46,18 @@ sub new {
 }
 
 sub screen {
+    bmwqemu::fctwarn("=== pev: sshVirtshSUT::screen()"); # FIXME: debug
     my ($self) = @_;
     return $self->{screen};
 }
 
 sub disable {
+    bmwqemu::fctwarn("=== pev: sshVirtshSUT::disable()"); # FIXME: debug
     my ($self) = @_;
 
+    bmwqemu::fctwarn("pev: before disconnect");
     if (my $ssh = $self->{ssh}) {
+        bmwqemu::fctwarn("pev: DISCONNECT");
         $ssh->disconnect;
         $self->{ssh} = $self->{chan} = $self->{screen} = undef;
     }
@@ -60,6 +65,7 @@ sub disable {
 }
 
 sub activate {
+    bmwqemu::fctwarn("=== pev: sshVirtshSUT::activate() (create SSH)"); # FIXME: debug
     my ($self) = @_;
 
     my $backend = $self->{backend};
@@ -68,6 +74,7 @@ sub activate {
 
     $self->{ssh}    = $ssh;
     $self->{screen} = consoles::virtio_screen->new($chan, $ssh->sock);
+    bmwqemu::fctwarn("=== pev: sshVirtshSUT::activate() END"); # FIXME: debug
     return;
 }
 

@@ -147,8 +147,10 @@ sub run_cmd {
     $chan->close();
 
     if (wantarray) {
+        bmwqemu::fctwarn("pev: WANTARAY"); # FIXME: debug
         return ($ret, $stdout, $errout);
     }
+    bmwqemu::fctwarn("pev: NO WANTARAY"); # FIXME: debug
     return $ret;
 }
 
@@ -160,6 +162,12 @@ sub run_ssh_cmd {
     bmwqemu::log_call(@_);
     my $credentials = $self->read_credentials_from_virsh_variables;
     my $self->{ssh} = $self->new_ssh_connection(%$credentials);
+
+    if ($args{nonblock}) {
+        bmwqemu::fctwarn("pev: CALL run_cmd, nonblock: " . $args{nonblock}); # FIXME: debug
+    } else {
+        bmwqemu::fctwarn("pev: CALL run_cmd, no nonblock"); # FIXME: debug
+    }
     return run_cmd($self->{ssh}, $cmd, %args);
 }
 
@@ -333,13 +341,24 @@ sub open_serial_console_via_ssh {
     $cmd_full = "script -f $log -c '$cmd; echo \"$marker \$?\"'";
     bmwqemu::diag("Starting SSH connection to connect to libvirt domain '$name' (cmd: '$cmd'), full cmd: '$cmd_full'");
 
+    bmwqemu::fctwarn("!!! pev: BEFORE '$cmd_full'"); # FIXME: debug
     ($ssh, $chan) = $self->run_ssh_cmd($cmd_full, nonblock => 1);
+    bmwqemu::fctwarn("pev: AFTER '$cmd_full'"); # FIXME: debug
+
+    # FIXME: debug
+    bmwqemu::fctwarn("pev: ref(ssh): '" . ref($ssh) . "'"); # FIXME: debug
+    bmwqemu::fctwarn("pev: dumpxml:"); # FIXME: debug
+    ($ret, $stdout, $stderr) = $self->run_ssh_cmd("virsh dumpxml $name");
+    # FIXME: debug
+
     ($ret, $stdout, $stderr) = $self->run_ssh_cmd("grep -q '$marker' $log");
+    bmwqemu::fctwarn("pev: ret: $ret"); # FIXME: debug
     if (!$ret) {
         (undef, $stdout, undef) = $self->run_ssh_cmd("cat $log");
         $self->die("problem with virsh: cmd: '$cmd', output of script wrapper: '$stdout')");
     }
 
+    bmwqemu::fctwarn("pev: BEFORE RETURN ref(ssh): '" . ref($ssh) . "'"); # FIXME: debug
     return ($ssh, $chan);
 }
 

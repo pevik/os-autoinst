@@ -37,6 +37,7 @@ has vmm_family => (is => "rw", isa => "Str");
 has vmm_type   => (is => "rw", isa => "Str");
 
 sub new {
+    bmwqemu::fctwarn("=== pev: sshVirtsh::new() (create SSH)"); # FIXME: debug
     my ($class, $testapi_console, $args) = @_;
     my $self = $class->SUPER::new($testapi_console, $args);
 
@@ -51,6 +52,7 @@ sub new {
 
 sub activate {
     my ($self) = @_;
+    bmwqemu::fctwarn("=== pev: sshVirtsh::activate() (create SSH)"); # FIXME: debug
 
     my $args = $self->{args};
 
@@ -271,6 +273,7 @@ sub add_vnc {
 # (in addition to the serial console on port 0 which added in add_pty, so don't use port 0 here)
 # As it's used over virsh console, use <console>.
 sub add_serial_console {
+    bmwqemu::fctwarn("=== pev: sshVirtsh::add_serial_console() (create SSH)"); # FIXME: debug
     my ($self, $args) = @_;
 
     my $port    = $args->{port}    // '1';
