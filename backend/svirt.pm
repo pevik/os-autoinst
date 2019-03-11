@@ -156,10 +156,11 @@ sub run_cmd {
 See parameters and examples at C<run_cmd>.
 =cut
 sub run_ssh_cmd {
-    my ($self, $cmd) = @_;
+    my ($self, $cmd, %args) = @_;
+    bmwqemu::log_call(@_);
     my $credentials = $self->read_credentials_from_virsh_variables;
     my $self->{ssh} = $self->new_ssh_connection(%$credentials);
-    return run_cmd($self->{ssh}, $cmd);
+    return run_cmd($self->{ssh}, $cmd, %args);
 }
 
 sub scp_get {
