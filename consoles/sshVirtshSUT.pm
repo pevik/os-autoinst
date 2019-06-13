@@ -52,6 +52,7 @@ sub screen {
 
 sub disable {
     my ($self) = @_;
+    bmwqemu::fctwarn("sshVirtshSUT::disable(): ref($self->{ssh}): " . ref($self->{ssh})); # FIXME: debug
 
     if (my $ssh = $self->{ssh}) {
         $ssh->disconnect;

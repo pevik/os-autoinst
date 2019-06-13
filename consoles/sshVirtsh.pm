@@ -559,6 +559,7 @@ __END"
     my $instance    = $self->instance;
     my $xmldata     = $self->{domainxml}->toString(2);
     my $xmlfilename = "/var/lib/libvirt/images/" . $self->name . ".xml";
+    bmwqemu::fctwarn("sshVirtsh::define_and_start(): using ref($self->{ssh}): " . ref($self->{ssh})); # FIXME: debug
     my $ssh         = $self->{ssh};
     my $chan        = $ssh->channel() || $ssh->die_with_error("Unable to create SSH channel for writing virsh config");
     my $ret;
@@ -626,6 +627,7 @@ sub stop_serial_grab {
 #   die "snapshot creation failed" unless $ret == 0;
 sub run_cmd {
     my ($self, $cmd) = @_;
+    bmwqemu::fctwarn("sshVirtsh::run_cmd(): using ref($self->{ssh}): " . ref($self->{ssh})); # FIXME: debug
     return backend::svirt::run_cmd($self->{ssh}, $cmd);
 }
 

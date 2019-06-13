@@ -171,6 +171,7 @@ sub run_ssh_cmd {
         password => $args{password},
         username => 'root'
     );
+    bmwqemu::fctwarn("svirt::run_ssh_cmd(): ref($self->{ssh}): " . ref($self->{ssh})); # FIXME: debug
 
     return run_cmd($self->{ssh}, $cmd, %args);
 }

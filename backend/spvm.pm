@@ -71,6 +71,8 @@ sub run_cmd {
         hostname => $hostname,
         password => $password,
         username => get_var('NOVALINK_USERNAME', 'root'));
+    bmwqemu::fctwarn("spvm::run_cmd(): ref($self->{ssh}): " . ref($self->{ssh})); # FIXME: debug
+
     my $chan = $ssh->channel() || $ssh->die_with_error();
     $chan->exec($cmd) || $ssh->die_with_error();
     get_ssh_output($chan);
