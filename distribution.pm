@@ -54,6 +54,7 @@ sub add_console {
     my %class_names = (
         'tty-console'       => 'ttyConsole',
         'ssh-xterm'         => 'sshXtermVt',
+        'ssh-xterm-serial'  => 'sshXtermVtSUT',
         'ssh-virtsh'        => 'sshVirtsh',
         'ssh-virtsh-serial' => 'sshVirtshSUT',
         'vnc-base'          => 'vnc_base',
