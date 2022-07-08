@@ -43,6 +43,7 @@ sub new ($class, $testapi_console, $args) {
     my $self = $class->SUPER::new($testapi_console, $args);
     $self->{fd_read} = 0;
     $self->{fd_write} = 0;
+    # FIXME: debug
     $self->{pipe_prefix} = $self->{args}->{socked_path} // cwd() . '/virtio_console';
     $self->{snapshots} = {};
     $self->{preload_buffer} = '';
