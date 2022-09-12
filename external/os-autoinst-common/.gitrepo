@@ -4,9 +4,9 @@
 ; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
 ;
 [subrepo]
-	remote = git@github.com:os-autoinst/os-autoinst-common.git
+	remote = git@github.com:pevik/os-autoinst-common.git
 	branch = master
-	commit = 3de570d96746ec44647c034ba6e107cbc06e4141
+	commit = 9a7f81907fad69724cd03edfdc7a74dd02b8fbe4
 	parent = 9b31e8770b86dfbb479e325f494d0b7cdbf56d66
 	method = merge
 	cmdver = 0.4.3
